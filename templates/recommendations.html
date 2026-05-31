@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Recommendations - Smart Tour Guide{% endblock %}
+
+{% block content %}
+<h2>🌍 Discover Your Next Adventure</h2>
+
+<div class="filter-section">
+    <h5>Filter Recommendations</h5>
+    <form id="filterForm">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="budget" class="form-label">Budget ($)</label>
+                <input type="number" class="form-control" id="budget" name="budget" value="2000" min="500">
+            </div>
+            <div class="col-md-3">
+                <label for="duration" class="form-label">Duration (days)</label>
+                <input type="number" class="form-control" id="duration" name="duration" value="5" min="1" max="30">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Categories</label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="cat1" value="Beach" name="categories">
+                        <label class="form-check-label" for="cat1">Beach</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="cat2" value="City" name="categories">
+                        <label class="form-check-label" for="cat2">City</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="cat3" value="Nature" name="categories">
+                        <label class="form-check-label" for="cat3">Nature</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="cat4" value="Culture" name="categories">
+                        <label class="form-check-label" for="cat4">Culture</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">🔍 Search Recommendations</button>
+    </form>
+</div>
+
+<div id="recommendationsContainer" class="destination-grid">
+    <div class="text-center mt-4">
+        <p class="text-muted">Adjust filters and click Search to see recommendations</p>
+    </div>
+</div>
+
+<script>
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const budget = document.getElementById('budget').value;
+    const duration = document.getElementById('duration').value;
+    const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked')).map(cb => cb.value);
+    
+    const container = document.getElementById('recommendationsContainer');
+    container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+    
+    fetch('{{ url_for("recommendations.search") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            budget: parseInt(budget),
+            duration: parseInt(duration),
+            categories: categories
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        container.innerHTML = '';
+        
+        if (!data.recommendations || data.recommendations.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">No destinations match your criteria. Try adjusting the filters.</div>';
+            return;
+        }
+        
+        data.recommendations.forEach(rec => {
+            const card = document.createElement('div');
+            card.className = 'destination-card card';
+            card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${rec.name}</h5>
+                    <p class="card-text">
+                        <strong>💰 Budget:</strong> ${rec.budget}<br>
+                        <strong>⏱️ Duration:</strong> ${rec.average_days} days<br>
+                        <strong>🌞 Best Season:</strong> ${rec.best_season.join(', ')}
+                    </p>
+                    <div class="mb-3">
+                        ${rec.categories.map(cat => `<span class="destination-badge">${cat}</span>`).join('')}
+                    </div>
+                    <a href="/recommendations/destination/${rec.key}" class="btn btn-primary btn-sm">View Details →</a>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        container.innerHTML = '<div class="alert alert-danger">Error loading recommendations</div>';
+    });
+});
+</script>
+{% endblock %}

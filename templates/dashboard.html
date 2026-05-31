@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Smart Tour Guide{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ session.username }}! 👋</h2>
+
+<div class="row mt-4 mb-4">
+    <div class="col-md-8">
+        <h3>Your Trips</h3>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('tours.create') }}" class="btn btn-primary">+ Create New Trip</a>
+    </div>
+</div>
+
+{% if trips %}
+<div class="row">
+    {% for trip in trips %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ trip[2] }}</h5>
+                <p class="card-text">
+                    <strong>Destination:</strong> {{ trip[3] }}<br>
+                    <strong>Duration:</strong> {{ trip[4] }} to {{ trip[5] }}<br>
+                    <strong>Budget:</strong> ${{ trip[6] }}
+                </p>
+                <a href="{{ url_for('tours.view_trip', trip_id=trip[0]) }}" class="btn btn-primary btn-sm">View Details</a>
+                <a href="{{ url_for('tours.edit_trip', trip_id=trip[0]) }}" class="btn btn-warning btn-sm">Edit</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <p>No trips yet. <a href="{{ url_for('tours.create') }}">Create your first trip!</a></p>
+</div>
+{% endif %}
+{% endblock %}

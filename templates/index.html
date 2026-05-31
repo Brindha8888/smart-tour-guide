@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Smart Tour Guide{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Welcome to Smart Tour Guide</h1>
+    <p class="lead">Plan your perfect trip with AI-powered recommendations and real-time information</p>
+    
+    {% if not session.user_id %}
+        <div class="mt-4">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-2">Get Started</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">Login</a>
+        </div>
+    {% else %}
+        <div class="mt-4">
+            <a href="{{ url_for('recommendations.index') }}" class="btn btn-light btn-lg me-2">Explore Destinations</a>
+            <a href="{{ url_for('tours.index') }}" class="btn btn-outline-light btn-lg">My Trips</a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">🗺️ Smart Recommendations</h5>
+                <p class="card-text">Get personalized destination recommendations based on your budget, interests, and travel duration.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">📋 Itinerary Planning</h5>
+                <p class="card-text">Generate detailed day-by-day itineraries with activities, timings, and locations.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">🌤️ Real-time Weather</h5>
+                <p class="card-text">Check current weather conditions and forecasts for your destination before you travel.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">🗺️ Google Maps Integration</h5>
+                <p class="card-text">Get directions, find nearby attractions, and explore locations with interactive maps.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">🎒 Smart Packing List</h5>
+                <p class="card-text">Automatically generate packing lists based on your destination type and trip duration.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">💾 Trip Management</h5>
+                <p class="card-text">Save and manage all your trips in one place with easy-to-access details.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

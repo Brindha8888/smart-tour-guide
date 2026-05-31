@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}My Trips - Smart Tour Guide{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>My Trips</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('tours.create') }}" class="btn btn-primary">+ Create New Trip</a>
+    </div>
+</div>
+
+{% if trips %}
+<div class="row">
+    {% for trip in trips %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ trip[2] }}</h5>
+                <p class="card-text">
+                    <strong>📍 Destination:</strong> {{ trip[3] }}<br>
+                    <strong>📅 Dates:</strong> {{ trip[4] }} to {{ trip[5] }}<br>
+                    <strong>💰 Budget:</strong> ${{ trip[6] }}
+                </p>
+                <a href="{{ url_for('tours.view_trip', trip_id=trip[0]) }}" class="btn btn-primary btn-sm">View</a>
+                <a href="{{ url_for('tours.edit_trip', trip_id=trip[0]) }}" class="btn btn-warning btn-sm">Edit</a>
+                <form method="POST" action="{{ url_for('tours.delete_trip', trip_id=trip[0]) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <p>No trips found. <a href="{{ url_for('tours.create') }}">Create your first trip now!</a></p>
+</div>
+{% endif %}
+{% endblock %}

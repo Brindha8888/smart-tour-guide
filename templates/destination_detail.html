@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Destination Details - Smart Tour Guide{% endblock %}
+
+{% block content %}
+{% if destination %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{{ destination.name }}</h1>
+        <p class="lead text-muted">Explore this amazing destination</p>
+    </div>
+</div>
+
+{% if weather.status == 'success' %}
+<div class="weather-widget">
+    <h5>🌤️ Current Weather</h5>
+    <div class="weather-item">
+        <span>Temperature</span>
+        <strong>{{ weather.temperature }}°C (feels like {{ weather.feels_like }}°C)</strong>
+    </div>
+    <div class="weather-item">
+        <span>Condition</span>
+        <strong>{{ weather.description|capitalize }}</strong>
+    </div>
+    <div class="weather-item">
+        <span>Humidity</span>
+        <strong>{{ weather.humidity }}%</strong>
+    </div>
+    <div class="weather-item">
+        <span>Wind Speed</span>
+        <strong>{{ weather.wind_speed }} m/s</strong>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Top Attractions</h3>
+        <div class="list-group">
+            {% for attraction in destination.attractions %}
+            <div class="list-group-item">
+                <h5>{{ attraction }}</h5>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Trip Information</h3>
+        <div class="card">
+            <div class="card-body">
+                <p><strong>Best Season:</strong> {{ destination.best_season|join(', ') }}</p>
+                <p><strong>Recommended Duration:</strong> {{ destination.average_days }} days</p>
+                <p><strong>Budget Range:</strong> ${{ destination.budget_low }} - ${{ destination.budget_high }}</p>
+                <p><strong>Categories:</strong> {{ destination.category|join(', ') }}</p>
+                <a href="{{ url_for('tours.create') }}" class="btn btn-primary">Create Trip to This Destination</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-warning">Destination not found</div>
+{% endif %}
+{% endblock %}
